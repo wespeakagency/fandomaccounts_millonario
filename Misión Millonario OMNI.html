@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reporte Believe: Millonario TikTok</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Stars Background */
+        .stars {
+            background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.5; transform: translateY(0); }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.5; transform: translateY(-20px); }
+        }
+
+        /* Animations */
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-spin-slow { animation: spin 20s linear infinite; }
+        .animate-spin-reverse-slow { animation: spin 15s linear infinite reverse; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Glitch Effect */
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+        }
+        .glitch::before {
+            left: 2px; text-shadow: -1px 0 #ff00c1;
+            clip-path: inset(44% 0 56% 0);
+            animation: glitch-anim-1 5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px; text-shadow: -1px 0 #00fff9;
+            clip-path: inset(44% 0 56% 0);
+            animation: glitch-anim-2 5s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 85% 0); } 100% { clip-path: inset(40% 0 40% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(15% 0 70% 0); } 100% { clip-path: inset(70% 0 60% 0); }
+        }
+
+        .clip-path-slant {
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+
+        /* Hide Scrollbar but keep functionality */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #dc2626; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "recharts": "https://esm.sh/recharts@^3.6.0"
+  }
+}
+</script>
+</head>
+<body>
+
+    <!-- Stars Layer -->
+    <div class="stars fixed inset-0 z-0 opacity-50 pointer-events-none"></div>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 transition-opacity duration-1000">
+        <div class="absolute inset-0 z-0 opacity-40"><div class="stars"></div></div>
+        <div class="relative z-10 text-center space-y-8 max-w-lg">
+            <div class="flex justify-center items-center gap-8 mb-8 opacity-80">
+                <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/believe%203.png" alt="Believe" class="h-8">
+                <div class="w-px h-8 bg-white/20"></div>
+                <img src="https://raw.githubusercontent.com/ulises-creator/wespeak/main/Recurso%204%404x.png" alt="We Speak" class="h-6 invert filter brightness-0">
+            </div>
+            <div>
+                <h1 class="text-4xl md:text-6xl font-orbitron font-black text-white mb-2 tracking-widest glitch" data-text="ACCESO">ACCESO</h1>
+                <h2 class="text-xl font-mono text-red-500 uppercase tracking-[0.3em]">Sistema de Inteligencia Omni</h2>
+            </div>
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-red-900 to-transparent"></div>
+            <p class="text-gray-400 font-mono text-xs md:text-sm leading-relaxed">
+                PROTOCOLO DE SEGURIDAD ACTIVADO.<br>
+                SE REQUIERE AUTORIZACIÓN PARA ACCEDER A LA BITÁCORA DE VUELO DE MILLONARIO.
+            </p>
+            <button id="start-btn" class="group relative inline-flex items-center justify-center gap-3 px-10 py-4 bg-red-600 hover:bg-red-700 text-white font-orbitron font-bold tracking-wider transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.6)] clip-path-slant cursor-pointer">
+                <!-- Power Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:animate-pulse"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" x2="12" y1="2" y2="12"/></svg>
+                INICIAR MISIÓN
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Content (Hidden Initially) -->
+    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+            <div class="max-w-7xl mx-auto px-4 md:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/believe%203.png" alt="Believe" class="h-8 md:h-10 opacity-90">
+                    <div class="hidden md:block h-6 w-px bg-white/20"></div>
+                    <img src="https://raw.githubusercontent.com/ulises-creator/wespeak/main/Recurso%204%404x.png" alt="We Speak" class="h-6 md:h-8 opacity-90 invert filter brightness-0">
+                </div>
+                <div class="text-[10px] md:text-xs font-mono text-red-400 border border-red-500/30 bg-red-950/20 px-4 py-1.5 rounded animate-pulse">
+                    ● TRANSMISIÓN EN VIVO // PROYECTO OMNI
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <div class="relative min-h-screen flex items-center justify-center overflow-hidden border-b border-red-900/30">
+            <div class="absolute inset-0 z-0 pointer-events-none">
+                <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/Gemini_Generated_Image_9076v09076v09076.png" class="w-full h-full object-cover opacity-60 scale-110 animate-float">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)]"></div>
+            </div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center pt-10">
+                <div class="space-y-8 text-center md:text-left">
+                    <div class="inline-block">
+                        <span class="font-mono text-xs text-red-400 border-l-2 border-red-500 pl-3 uppercase tracking-widest mb-2 block">Bitácora de Misión: Fase 1</span>
+                        <h1 class="text-6xl md:text-8xl font-black tracking-tighter text-white glitch" data-text="MILLONARIO">MILLONARIO</h1>
+                        <h2 class="text-4xl md:text-6xl font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-300 to-white">OMNI</h2>
+                    </div>
+                    <p class="text-lg text-gray-300 max-w-lg leading-relaxed border-l border-white/20 pl-6 mx-auto md:mx-0">
+                        La invasión ha comenzado. Análisis de datos de la colonización digital en TikTok. El sonido se expande por el universo.
+                    </p>
+                    <button onclick="document.getElementById('mission-report').scrollIntoView({behavior: 'smooth'})" class="group relative inline-flex items-center justify-center px-8 py-3 font-orbitron font-bold text-white transition-all duration-200 bg-red-600 font-lg hover:bg-red-700 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] clip-path-slant cursor-pointer">
+                        <span class="mr-2">INICIAR REPORTE</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-y-1 transition-transform"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                </div>
+                <div class="relative hidden md:block">
+                    <div class="relative z-10 w-full max-w-md mx-auto aspect-[3/4] rounded-2xl overflow-hidden border border-red-500/20 shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+                        <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/WhatsApp%20Image%202025-11-11%20at%205.06.12%20PM.jpeg" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-red-900/40 via-transparent to-transparent mix-blend-overlay"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <main id="mission-report" class="relative z-10">
+            
+            <!-- Metrics Grid -->
+            <div class="bg-gradient-to-b from-black via-neutral-900/80 to-black pt-20 pb-10">
+                <section class="py-20 px-4 md:px-8 max-w-7xl mx-auto relative">
+                    <div class="mb-12 text-center">
+                        <h3 class="text-red-500 font-mono text-sm tracking-[0.5em] uppercase mb-2">Resumen de Misión</h3>
+                        <h2 className="text-3xl md:text-5xl font-orbitron font-bold text-white">TELEMETRÍA GLOBAL</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="metrics-container">
+                        <!-- Metrics injected by JS -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Mothership Section -->
+            <section class="py-20 px-4 md:px-8 max-w-7xl mx-auto relative space-y-12">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="order-2 md:order-1 h-full">
+                        <div class="relative bg-neutral-900/40 backdrop-blur-md border border-red-900/30 rounded-xl p-6 shadow-[0_0_15px_rgba(220,38,38,0.1)] h-full overflow-hidden flex flex-col">
+                            <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-red-500 rounded-tl-lg"></div>
+                            <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-red-500 rounded-tr-lg"></div>
+                            <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-red-500 rounded-bl-lg"></div>
+                            <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-red-500 rounded-br-lg"></div>
+                            
+                            <div class="mb-6 border-b border-red-900/30 pb-2">
+                                <h3 class="text-red-500 font-orbitron uppercase tracking-widest text-sm flex items-center gap-2">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                    NAVE NODRIZA DETECTADA
+                                </h3>
+                            </div>
+                            <div class="flex flex-col flex-grow justify-center">
+                                <div class="mb-8 flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-red-600 to-black rounded-lg border border-red-500 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transform -rotate-45"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-3xl font-orbitron font-bold text-white">CHURRO TIME</h3>
+                                        <p class="text-red-400 font-mono text-sm">IDENTIFICACIÓN: MVP</p>
+                                    </div>
+                                </div>
+                                <p class="text-gray-400 mb-6 leading-relaxed">
+                                    La señal más fuerte proviene de esta ubicación. Esta cuenta actuó como el <strong class="text-white">Motor de Propulsión Principal</strong> para la campaña Omni, centralizando la viralidad y distribuyendo la frecuencia a través del cuadrante.
+                                </p>
+                                <div class="grid grid-cols-3 gap-4 border-t border-white/10 pt-6 mt-auto">
+                                    <div><div class="text-2xl font-bold text-white">106</div><div class="text-[10px] uppercase text-gray-500">Transmisiones</div></div>
+                                    <div><div class="text-2xl font-bold text-white">854K</div><div class="text-[10px] uppercase text-gray-500">Alcance</div></div>
+                                    <div><div class="text-2xl font-bold text-white">117K</div><div class="text-[10px] uppercase text-gray-500">Impactos</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2 relative h-full min-h-[400px]">
+                        <div class="relative bg-neutral-900/40 backdrop-blur-md border border-red-900/30 rounded-xl p-6 shadow-[0_0_15px_rgba(220,38,38,0.1)] h-full flex flex-col">
+                            <h3 class="text-red-500 font-orbitron uppercase tracking-widest text-sm mb-4">TELEMETRÍA DE ALCANCE</h3>
+                            <div class="flex-grow relative h-80">
+                                <canvas id="mothershipChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Galaxy Songs Section -->
+            <section class="py-20 px-4 md:px-8 max-w-7xl mx-auto relative">
+                <div class="absolute inset-0 z-0 opacity-30 pointer-events-none">
+                    <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/Gemini_Generated_Image_91zfh391zfh391zf.png" class="w-full h-full object-cover mix-blend-screen" alt="Galaxy">
+                </div>
+                
+                <div class="relative z-10 flex flex-col gap-12">
+                    <!-- Top Videos Grid -->
+                    <div class="space-y-6 w-full">
+                        <div class="mb-8">
+                            <h2 class="text-4xl font-orbitron font-bold mb-2 text-white">TOP INTERCEPTIONS</h2>
+                            <div class="h-1 w-20 bg-red-600"></div>
+                            <p class="text-gray-400 mt-4 font-mono text-sm">Videos virales detectados en la órbita. Visualización directa de la transmisión.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="videos-container">
+                            <!-- Videos injected here -->
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Dominant Song -->
+                        <div class="relative rounded-2xl overflow-hidden border border-red-900/50 shadow-2xl min-h-[400px] group">
+                            <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/WhatsApp%20Image%202026-01-08%20at%207.01.58%20PM.jpeg" class="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 opacity-60">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                            <div class="absolute bottom-6 left-6">
+                                <p class="text-red-500 font-bold text-xs uppercase tracking-widest mb-1">FRECUENCIA DOMINANTE</p>
+                                <h3 class="text-3xl font-orbitron font-bold text-white">Te Falta Práctica</h3>
+                                <p class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">341h 28m</p>
+                            </div>
+                        </div>
+                        <!-- Distribution Chart -->
+                        <div class="relative bg-neutral-900/40 backdrop-blur-md border border-red-900/30 rounded-xl p-6 shadow-[0_0_15px_rgba(220,38,38,0.1)] w-full">
+                             <div class="mb-6 border-b border-red-900/30 pb-2">
+                                <h3 class="text-red-500 font-orbitron uppercase tracking-widest text-sm">DISTRIBUCIÓN TEMPORAL (HORAS)</h3>
+                            </div>
+                            <div class="h-80 w-full relative">
+                                <canvas id="songsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Demographics Section -->
+            <section class="py-20 px-4 md:px-8 max-w-7xl mx-auto relative">
+                <div class="mb-12">
+                    <h2 class="text-4xl font-orbitron font-bold mb-2 text-white">ANÁLISIS DEMOGRÁFICO</h2>
+                    <div class="h-1 w-20 bg-red-600"></div>
+                    <p class="text-gray-400 mt-4 font-mono text-sm max-w-3xl">Crucero de datos entre rendimiento y perfil de audiencia. Visión estratégica para la toma de decisiones.</p>
+                </div>
+                
+                <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Resumen Ejecutivo -->
+                    <div class="bg-neutral-900/60 border border-neutral-700 p-8 rounded-xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2"><span class="w-2 h-8 bg-red-600 block"></span>RESUMEN EJECUTIVO</h3>
+                        <div class="space-y-4 text-gray-300">
+                            <p>En general, tu ecosistema de cuentas le habla a una audiencia <strong class="text-white">Joven (18-34 años)</strong> y predominantemente <strong class="text-white">Mexicana</strong>.</p>
+                            <div class="grid sm:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-black/40 p-4 rounded border border-white/10">
+                                    <div class="flex items-center gap-2 mb-2 text-red-400"><span class="font-mono text-xs uppercase">Ubicación</span></div>
+                                    <div class="text-2xl font-bold text-white">88.9% - 95.4%</div>
+                                    <div class="text-xs text-gray-500">Dominio absoluto de México</div>
+                                </div>
+                                <div class="bg-black/40 p-4 rounded border border-white/10">
+                                    <div class="flex items-center gap-2 mb-2 text-red-400"><span class="font-mono text-xs uppercase">Edad Core</span></div>
+                                    <div class="text-2xl font-bold text-white">90%</div>
+                                    <div class="text-xs text-gray-500">Entre 18-34 años</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Hallazgo Clave -->
+                    <div class="bg-gradient-to-br from-red-900/20 to-black border border-red-500/30 p-8 rounded-xl">
+                        <h3 class="text-xl font-bold text-red-400 mb-6 font-mono uppercase tracking-widest">HALLAZGO CLAVE: POLARIZACIÓN DE GÉNERO</h3>
+                        <p class="text-white mb-6">Tienes cuentas para "ellos" y una cuenta muy específica para "ellas".</p>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="flex justify-between text-sm mb-2"><span class="text-blue-300 font-bold">EL BLOQUE MASCULINO</span><span class="text-gray-400">Promedio ~75% Hombres</span></div>
+                                <div class="space-y-2 text-xs font-mono text-gray-400">
+                                    <div class="flex justify-between"><span>Next Level Player</span><span class="text-white">84% Hombres</span></div>
+                                    <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-500 h-full" style="width: 84%"></div></div>
+                                    <div class="flex justify-between mt-2"><span>Churro Time (MVP)</span><span class="text-white">66% Hombres</span></div>
+                                    <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden"><div class="bg-blue-500 h-full" style="width: 66%"></div></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-2"><span class="text-pink-400 font-bold">EL NICHO FEMENINO: "BARRIO FLOW"</span><span class="text-white font-bold">77% Mujeres</span></div>
+                                <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden"><div class="bg-pink-500 h-full" style="width: 77%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-6 text-xs text-gray-400 font-mono">
+                    <div class="bg-neutral-900/40 p-6 rounded-lg border-l-2 border-yellow-500">
+                        <h4 class="text-yellow-500 font-bold mb-2 text-sm font-sans">GEN Z (18-24)</h4>
+                        <p class="mb-2">Más jóvenes, audiencia nativa digital.</p>
+                        <ul class="space-y-1"><li>• Barrio Flow (51.9%)</li><li>• Que Perradas (50%)</li><li>• Churro Time (48%)</li></ul>
+                    </div>
+                    <div class="bg-neutral-900/40 p-6 rounded-lg border-l-2 border-purple-500">
+                        <h4 class="text-purple-500 font-bold mb-2 text-sm font-sans">MILLENNIALS (25-34)</h4>
+                        <p class="mb-2">Más maduros, humor nostálgico.</p>
+                        <ul class="space-y-1"><li>• Next Level Player (46.7%)</li><li>• Millomemes (44.9%)</li></ul>
+                    </div>
+                    <div class="bg-neutral-900/40 p-6 rounded-lg border-l-2 border-green-500">
+                        <h4 class="text-green-500 font-bold mb-2 text-sm font-sans">LA DIÁSPORA (EE.UU.)</h4>
+                        <p class="mb-2">Oportunidades de alto valor.</p>
+                        <ul class="space-y-1"><li>• <strong class="text-white">Churro Time: 4.3%</strong></li><li>• Que Perradas: 2.4%</li></ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conclusions Section -->
+            <section class="py-20 px-4 md:px-8 max-w-7xl mx-auto relative bg-gradient-to-b from-transparent via-neutral-900/20 to-transparent">
+                <div class="mb-12">
+                    <h2 class="text-4xl font-orbitron font-bold mb-2 text-white">CONCLUSIONES DE MISIÓN</h2>
+                    <div class="h-1 w-20 bg-red-600"></div>
+                    <p class="text-gray-400 mt-4 font-mono text-sm">Recomendaciones estratégicas basadas en el análisis de vistas, tiempo de reproducción y engagement.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                     <div class="bg-black border border-red-900/30 p-8 rounded-xl hover:border-red-500 transition-colors group">
+                        <h3 class="text-xl font-bold text-white font-orbitron mb-4 flex items-center gap-2"><span class="text-red-500">●</span> EL FENÓMENO "CHURRO TIME"</h3>
+                        <ul class="space-y-4 text-gray-300 text-sm leading-relaxed">
+                            <li><strong class="text-red-400 block">Columna Vertebral</strong>Genera el ~90% de las interacciones totales.</li>
+                            <li><strong class="text-red-400 block">Engagement Excepcional</strong>Su tasa es del <span class="text-white font-bold">23.6%</span> (Promedio industria: 3-5%).</li>
+                            <li><strong class="text-red-400 block">Calidad vs Cantidad</strong>1 de cada 4 personas interactúan con su contenido.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-black border border-blue-900/30 p-8 rounded-xl hover:border-blue-500 transition-colors group">
+                        <h3 class="text-xl font-bold text-white font-orbitron mb-4 flex items-center gap-2"><span class="text-blue-500">●</span> EL PODER DE "TORQUE"</h3>
+                        <ul class="space-y-4 text-gray-300 text-sm leading-relaxed">
+                            <li><strong class="text-blue-400 block">Campeona Silenciosa</strong>"Torque" tiene el mayor tiempo total de reproducción acumulado.</li>
+                            <li><strong class="text-blue-400 block">Retención Superior</strong>Métrica clave para el algoritmo: la gente se queda viendo.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="border-t border-white/10 pt-12">
+                    <h3 class="text-2xl font-orbitron font-bold text-white mb-8">ESTRATEGIA DE CONTENIDO</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-red-400 font-bold mb-2 font-mono">CONTENIDO VIRAL (ENGAGEMENT)</h4>
+                            <p class="text-gray-300 text-sm">Usar tracks como "Las Cuentas" y "Te Falta Práctica". Generan likes masivos para atraer audiencia.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-blue-400 font-bold mb-2 font-mono">CONTENIDO DE RETENCIÓN</h4>
+                            <p class="text-gray-300 text-sm">Usar tracks como "Torque". Mejoran la autoridad de la cuenta por watch-time.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- We Speak Proposal -->
+            <section class="py-24 px-4 relative overflow-hidden">
+                <div class="max-w-5xl mx-auto relative z-10">
+                    <div class="text-center mb-16">
+                        <div class="inline-block p-2 px-4 border border-white/20 rounded-full bg-white/5 backdrop-blur mb-6">
+                            <span class="text-xs font-mono tracking-[0.3em] text-white">PROPUESTA WE SPEAK</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-orbitron font-black text-white mb-6">ECOSISTEMA DIGITAL <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-purple-600">CENTRALIZADO</span></h2>
+                    </div>
+                    <div class="bg-neutral-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-8 md:p-12 shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+                        <div class="flex flex-col md:flex-row items-center gap-8 mb-12 border-b border-white/10 pb-12">
+                            <div class="w-full md:w-1/3 text-center md:text-left">
+                                <h3 class="text-2xl font-bold text-white mb-2">LA MISIÓN</h3>
+                                <p class="text-gray-400 text-sm">Convertir el tráfico viral de TikTok en fans activos y streams monetizables.</p>
+                            </div>
+                            <div class="w-full md:w-2/3">
+                                <div class="bg-black/50 p-6 rounded-xl border border-red-500/20 flex items-center gap-4">
+                                    <div class="bg-red-600 p-3 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+                                    <div>
+                                        <h4 class="text-white font-bold text-lg">LANDING EXPERIENCIAL (HUB)</h4>
+                                        <p class="text-sm text-gray-400">Una base central adaptable a cada álbum que conecta TikTok, Redes y Streaming.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-6">
+                                <h4 class="text-red-500 font-mono text-xs tracking-widest uppercase mb-4">ELEMENTOS DEL SISTEMA</h4>
+                                <div class="flex gap-4"><div class="text-gray-500">●</div><div><h5 class="text-white font-bold">Identidad Narrativa</h5><p class="text-sm text-gray-500">Hero visual inmersivo y previews de audio.</p></div></div>
+                                <div class="flex gap-4"><div class="text-gray-500">●</div><div><h5 class="text-white font-bold">Integración TikTok Total</h5><p class="text-sm text-gray-500">Loop de tráfico TikTok → Web → TikTok.</p></div></div>
+                                <div class="flex gap-4"><div class="text-gray-500">●</div><div><h5 class="text-white font-bold">Conversión Inteligente</h5><p class="text-sm text-gray-500">Salidas claras a Spotify/Apple Music con tracking.</p></div></div>
+                            </div>
+                            <div class="relative bg-gradient-to-br from-black to-neutral-900 rounded-xl p-6 border border-white/5 flex flex-col justify-center items-center text-center">
+                                <h4 class="text-xl font-bold text-white mb-4 z-10">ENFOQUE WE SPEAK</h4>
+                                <p class="text-gray-400 text-sm z-10 leading-relaxed">"Pasar de activaciones aisladas a un <span class="text-red-400">ecosistema digital escalable</span>."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-black border-t border-red-900/30 py-16 mt-12 relative overflow-hidden">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(220,38,38,0.15),transparent_70%)] pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto px-4 flex flex-col items-center gap-8 relative z-10">
+                <div class="flex items-center gap-6">
+                    <img src="https://raw.githubusercontent.com/ulises-creator/believe/main/believe%203.png" alt="Believe" class="h-12 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div class="h-8 w-px bg-white/20"></div>
+                    <img src="https://raw.githubusercontent.com/ulises-creator/wespeak/main/Recurso%204%404x.png" alt="We Speak" class="h-8 md:h-10 opacity-80 hover:opacity-100 invert filter brightness-0">
+                </div>
+                <p class="text-gray-600 text-xs font-mono text-center max-w-md">TRANSMISIÓN FINALIZADA. LOS DATOS HAN SIDO ENCRIPTADOS. © 2025</p>
+            </div>
+        </footer>
+
+        <!-- Audio Control -->
+        <div class="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-black/80 backdrop-blur border border-red-500/30 rounded-full p-2 pl-4 shadow-[0_0_20px_rgba(220,38,38,0.2)]">
+            <div class="flex flex-col mr-2">
+               <span class="text-[10px] text-red-500 font-mono font-bold uppercase tracking-wider">OMNI RADIO</span>
+               <span id="audio-status" class="text-xs text-white font-orbitron animate-pulse min-w-[100px] text-right">TRANSMITIENDO...</span>
+            </div>
+            <button id="btn-play-pause" class="w-10 h-10 rounded-full bg-red-600 hover:bg-red-500 text-white flex items-center justify-center transition-colors cursor-pointer">
+                <svg id="icon-pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                <svg id="icon-play" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+            <button id="btn-mute" class="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-gray-300 flex items-center justify-center transition-colors cursor-pointer">
+                 <svg id="icon-vol" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                 <svg id="icon-mute" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- TikTok Embed Script -->
+    <script async src="https://www.tiktok.com/embed.js"></script>
+
+    <!-- App Logic -->
+    <script>
+        // --- DATA ---
+        const ACCOUNT_STATS = [
+            { name: 'Churro Time', videos: 106, views: 854370, likes: 117750, shares: 77038 },
+            { name: 'Que perradas', videos: 44, views: 33720, likes: 2254, shares: 316 },
+            { name: 'Next Level Player', videos: 32, views: 18411, likes: 1427, shares: 85 },
+            { name: 'Barrio Flow', videos: 26, views: 18307, likes: 1273, shares: 120 },
+            { name: 'Millomemes', videos: 17, views: 13449, likes: 598, shares: 64 }
+        ];
+
+        const TOP_VIDEOS = [
+            { rank: 1, title: 'Maestro tortillero', account: 'Churro Time', date: '28/10/2025', song: 'Te Falta Práctica', views: 137761, likes: 15500, shares: 11300, url: 'https://www.tiktok.com/@churrotime56/video/7566399433366162696' },
+            { rank: 2, title: '100 puntos para Gryffindor', account: 'Churro Time', date: '14/12/2025', song: 'Torque', views: 20780, likes: 3283, shares: 893, url: 'https://www.tiktok.com/@churrotime56/photo/7583892495394721042' },
+            { rank: 3, title: 'Las etapas del pipazo', account: 'Churro Time', date: '07/11/2025', song: 'Hablan y Hablan', views: 15792, likes: 2592, shares: 693, url: 'https://www.tiktok.com/@churrotime56/photo/7570022743735799048' },
+            { rank: 4, title: 'Ando bien waxeado', account: 'Churro Time', date: '10/11/2025', song: 'Torque', views: 7253, likes: 629, shares: 164, url: 'https://www.tiktok.com/@churrotime56/video/7571203897394482439' },
+            { rank: 5, title: 'Kallaito Papito', account: 'Churro Time', date: '29/12/2025', song: 'La Blindada', views: 4495, likes: 522, shares: 221, url: 'https://www.tiktok.com/@churrotime56/photo/7589320496823438599' },
+        ];
+
+        const SONG_TIMES = [
+            { name: 'Te Falta Práctica', totalMinutes: 20488 },
+            { name: 'Torque', totalMinutes: 3412 },
+            { name: 'Culpa de Ella', totalMinutes: 1362 },
+            { name: 'Los Homies', totalMinutes: 1311 },
+            { name: 'La Blindada', totalMinutes: 1220 },
+            { name: 'Lollipop', totalMinutes: 1056 },
+            { name: 'Lowrider', totalMinutes: 1034 },
+            { name: 'Hablan y Hablan', totalMinutes: 872 },
+        ];
+
+        const METRICS = [
+            { label: 'Tiempo de Reproducción', value: '589h 36m', subtext: 'Exposición Temporal', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' },
+            { label: 'Videos Totales', value: '225', subtext: 'Señales Emitidas', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>' },
+            { label: 'Vistas Totales', value: '938k+', subtext: 'Impacto Galáctico', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>' },
+            { label: 'Nave Nodriza', value: 'Churro Time', subtext: 'Fuente de la Señal', icon: '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' },
+        ];
+
+        // --- RENDER FUNCTIONS ---
+        function renderMetrics() {
+            const container = document.getElementById('metrics-container');
+            METRICS.forEach(metric => {
+                const el = document.createElement('div');
+                el.className = 'relative bg-black/40 backdrop-blur border border-white/10 p-6 rounded hover:border-red-500/50 transition-all group overflow-hidden';
+                el.innerHTML = `
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-red-600/10 rounded-full blur-xl group-hover:bg-red-600/20 transition-all"></div>
+                    <div class="flex justify-between items-start mb-4 relative z-10">
+                        <div class="text-red-500">${metric.icon}</div>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl md:text-4xl font-black text-white mb-1 tracking-tight font-orbitron">${metric.value}</h3>
+                        <p class="text-red-400 font-bold text-sm uppercase tracking-wider mb-2">${metric.label}</p>
+                        <p class="text-xs text-gray-500 font-mono leading-relaxed">${metric.subtext}</p>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function renderVideos() {
+            const container = document.getElementById('videos-container');
+            TOP_VIDEOS.forEach(video => {
+                const videoId = video.url.split('/').pop();
+                const el = document.createElement('div');
+                el.className = 'bg-neutral-900/40 border border-neutral-800 rounded-xl overflow-hidden hover:border-red-500/50 transition-all flex flex-col';
+                el.innerHTML = `
+                    <div class="p-3 bg-black/50 border-b border-white/5 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-red-500 font-bold font-orbitron">#${video.rank}</span>
+                            <span class="text-xs text-gray-400 truncate max-w-[150px]">${video.title}</span>
+                        </div>
+                        <div class="text-[10px] bg-red-900/20 text-red-400 px-2 py-0.5 rounded border border-red-900/30">${video.song}</div>
+                    </div>
+                    <div class="flex-grow bg-black flex justify-center items-center min-h-[500px]">
+                        <blockquote class="tiktok-embed" cite="${video.url}" data-video-id="${videoId}" style="max-width: 100%; min-width: 325px; margin: 0">
+                            <section> <a target="_blank" href="${video.url}">@${video.account}</a> </section>
+                        </blockquote>
+                    </div>
+                    <div class="p-3 bg-neutral-900/80 border-t border-white/5 grid grid-cols-3 gap-2 text-center text-xs font-mono">
+                        <div><span class="block text-white font-bold">${video.views.toLocaleString()}</span><span class="text-gray-500">Vistas</span></div>
+                        <div><span class="block text-white font-bold">${video.likes.toLocaleString()}</span><span class="text-gray-500">Likes</span></div>
+                        <div><span class="block text-white font-bold">${video.shares.toLocaleString()}</span><span class="text-gray-500">Shares</span></div>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        // --- CHARTS ---
+        function initCharts() {
+            // Mothership Chart (Views)
+            new Chart(document.getElementById('mothershipChart'), {
+                type: 'bar',
+                data: {
+                    labels: ACCOUNT_STATS.map(a => a.name),
+                    datasets: [{
+                        data: ACCOUNT_STATS.map(a => a.views),
+                        backgroundColor: ACCOUNT_STATS.map((_, i) => i === 0 ? '#DC2626' : '#404040'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: { ticks: { color: '#aaa', font: { size: 10 } }, grid: { display: false } }
+                    }
+                }
+            });
+
+            // Songs Chart (Duration)
+            new Chart(document.getElementById('songsChart'), {
+                type: 'bar',
+                data: {
+                    labels: SONG_TIMES.map(s => s.name),
+                    datasets: [{
+                        data: SONG_TIMES.map(s => s.totalMinutes),
+                        backgroundColor: SONG_TIMES.map((_, i) => i === 0 ? '#EF4444' : '#7F1D1D'),
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: { ticks: { color: '#fff', font: { weight: 'bold', size: 11 } }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- AUDIO & LOGIC ---
+        const audio = new Audio("https://raw.githubusercontent.com/ulises-creator/believe/main/Te%20Falta%20Pr%C3%A1ctica.mp3");
+        audio.loop = true;
+        let isPlaying = false;
+        let isMuted = false;
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            isPlaying ? audio.play() : audio.pause();
+            document.getElementById('icon-play').classList.toggle('hidden');
+            document.getElementById('icon-pause').classList.toggle('hidden');
+            document.getElementById('audio-status').innerText = isPlaying ? 'TRANSMITIENDO...' : 'EN PAUSA';
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            audio.muted = isMuted;
+            document.getElementById('icon-mute').classList.toggle('hidden');
+            document.getElementById('icon-vol').classList.toggle('hidden');
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMetrics();
+            renderVideos();
+
+            const startBtn = document.getElementById('start-btn');
+            const introScreen = document.getElementById('intro-screen');
+            const appContent = document.getElementById('app-content');
+
+            startBtn.addEventListener('click', () => {
+                introScreen.classList.add('opacity-0');
+                setTimeout(() => {
+                    introScreen.style.display = 'none';
+                    appContent.classList.remove('hidden');
+                    // Slight delay to allow display:block to apply before opacity transition
+                    setTimeout(() => appContent.classList.remove('opacity-0'), 50);
+                    
+                    // Init charts after visible
+                    initCharts();
+                    
+                    // Start Audio
+                    audio.volume = 1.0;
+                    audio.play().then(() => {
+                        isPlaying = true;
+                    }).catch(e => console.log("Audio requires interaction", e));
+
+                }, 1000);
+            });
+
+            document.getElementById('btn-play-pause').addEventListener('click', togglePlay);
+            document.getElementById('btn-mute').addEventListener('click', toggleMute);
+        });
+    </script>
+</body>
+</html>
